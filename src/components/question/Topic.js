@@ -19,6 +19,7 @@ const token = Cookies.get('token');
 function Topic({issue_id}) {
 
     const [topic, setTopic] = useState([]);
+    const [issue, setIssue] = useState({});
     const [time, setTime] = useState(null);
     const [addOptionModal, setAddOptionModal] = useState(false);
     const [addTopicModal, setAddTopicModal] = useState(false);
@@ -42,6 +43,7 @@ function Topic({issue_id}) {
                     item.key = index;
                     return item;
                 }));
+                setIssue(data.issue);
             }
         }).catch(e => {
             handleError(e);
@@ -107,6 +109,18 @@ function Topic({issue_id}) {
             key: 'type',
             width: '120px',
             render: type => typeDict[type],
+        },
+        {
+            title: '答案值',
+            dataIndex: 'answer',
+            key: 'answer',
+            width: '120px',
+        },
+        {
+            title: '分数',
+            dataIndex: 'score',
+            key: 'score',
+            width: '120px',
         },
         {
             title: '操作', 
@@ -290,6 +304,7 @@ function Topic({issue_id}) {
                     setTime={setTime}
                     setCreateTopicModal={setAddTopicModal}
                     issueId={issue_id}
+                    issueType={issue.issue_type}
                 />
             </Modal>
         </div>

@@ -122,8 +122,9 @@ function Question({setActiveKey, setIssueId}) {
             dataIndex: '_id',
             key: 'link',
             width: '120px',
-            render: id => {
-                const link = `${host}/m?issue_id=${id}&uid=`;
+            render: (id, record)=> {
+                const {issue_type} = record;
+                const link = `${host}/m?issue_id=${id}&issue_type=${issue_type}&uid=`;
                 return <a href={link} title={link} target="_blank">查看问卷</a>
             }
         }, {

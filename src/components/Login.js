@@ -27,6 +27,7 @@ function  NormalLoginForm(props) {
                     window.location.href = '/d/question'
                 }
             }).catch(e => {
+                console.log('e', e);
                 if(!e.response) message.error(e.message);
                 else {
                     const { data } = e.response;

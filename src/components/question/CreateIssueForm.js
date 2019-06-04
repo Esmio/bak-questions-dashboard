@@ -1,8 +1,10 @@
 import React from 'react';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, message, Select } from 'antd';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { host } from '../../config';
+
+const Option = Select.Option;
 
 const token = Cookies.get('token');
 
@@ -11,7 +13,7 @@ function CreateIssueForm({form, setTime, setCreateIssueModal}) {
         e.preventDefault();
         form.validateFields((err, values) => {
             if(!err) {
-                const {title, issue} = values;
+                const {title, issue, issueType} = values;
                 const create = Date.now();
                 axios({
                     method: 'post',
@@ -22,6 +24,7 @@ function CreateIssueForm({form, setTime, setCreateIssueModal}) {
                     data: {
                         title,
                         issue,
+                        issueType,
                         create,
                     }
                 }).then(r => {
@@ -43,9 +46,21 @@ function CreateIssueForm({form, setTime, setCreateIssueModal}) {
 
     const { getFieldDecorator } = form;
 
+    const formItemLayout = {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 4 },
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 20 },
+        },
+      };
+
     return (
-        <Form onSubmit={handleSubmit}>
-            <Form.Item>
+        <Form
+            onSubmit={handleSubmit}>
+            <Form.Item {...formItemLayout} label="期号">
                 {
                     getFieldDecorator('issue', {
                         rules: [{ required: true, message: '请输入期号!' }],
@@ -54,7 +69,20 @@ function CreateIssueForm({form, setTime, setCreateIssueModal}) {
                       )
                 }
             </Form.Item>
-            <Form.Item>
+            <Form.Item {...formItemLayout} label="类型">
+                {
+                    getFieldDecorator('issueType', {
+                        rules: [{ required: true, message: '请选择问卷类型！' }],
+                        initialValue: 1
+                    })(
+                        <Select>
+                            <Option value={1}>问卷</Option>
+                            <Option value={2}>问答</Option>
+                        </Select>
+                    )
+                }
+            </Form.Item>
+            <Form.Item {...formItemLayout} label="标题">
                 {
                     getFieldDecorator('title', {
                         rules: [{ required: true, message: '请输入标题!' }],
