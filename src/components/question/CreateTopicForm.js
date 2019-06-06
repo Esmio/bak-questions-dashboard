@@ -30,6 +30,7 @@ function CreateOptionForm({ form, setTime, setCreateTopicModal, issueId, issueTy
                     follow_number,
                     follow_value,
                     answer,
+                    multi_answer,
                     score,
                 } = values;
                 const create = Date.now();
@@ -48,6 +49,7 @@ function CreateOptionForm({ form, setTime, setCreateTopicModal, issueId, issueTy
                     textarea,
                     issue_id: issueId,
                     answer,
+                    multi_answer,
                     score,
                 }
                 if (follow_number && follow_value) data.follow = followStr
@@ -240,7 +242,23 @@ function CreateOptionForm({ form, setTime, setCreateTopicModal, issueId, issueTy
                     </Form.Item> : ''
             }
             {
-                type === 'choice' && issueType === 2 ? // issueType === 2
+                type === 'multiselector' && issueType === 2 ?  // issueType === 2
+                    <Form.Item
+                        {...formItemLayout}
+                        label="设置多选答案"
+                        hasFeedback
+                    >
+                        {
+                            getFieldDecorator('multi_answer', {
+                                rules: [{ required: true, message: '请输入多选答案!' }],
+                            })(
+                                <Input placeholder="答案" />
+                            )
+                        }
+                    </Form.Item> : ''
+            }
+            {
+                type === 'choice' || type === 'multiselector' && issueType === 2 ? // issueType === 2
                     <Form.Item
                         {...formItemLayout}
                         label="设置分数"

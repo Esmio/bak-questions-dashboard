@@ -16,7 +16,7 @@ import { convertResult, exportCsv } from './util';
 const user = Cookies.getJSON('user');
 const token = Cookies.get('token');
 
-function Topic({issue_id}) {
+function Topic({ issue_id }) {
 
     const [topic, setTopic] = useState([]);
     const [issue, setIssue] = useState({});
@@ -25,7 +25,7 @@ function Topic({issue_id}) {
     const [addTopicModal, setAddTopicModal] = useState(false);
     const [curTopicId, setCurTopicId] = useState();
     const [result, setResult] = useState([]);
-    
+
     useEffect(() => {
         axios({
             method: 'post',
@@ -38,7 +38,7 @@ function Topic({issue_id}) {
             }
         }).then(r => {
             const { code, data } = r.data;
-            if(code === 0) {
+            if (code === 0) {
                 setTopic(data.list.map((item, index) => {
                     item.key = index;
                     return item;
@@ -59,7 +59,7 @@ function Topic({issue_id}) {
             },
         }).then(r => {
             const { code, data } = r.data;
-            if(code === 0) {
+            if (code === 0) {
                 setResult(data.results);
             }
         }).catch(e => {
@@ -79,7 +79,7 @@ function Topic({issue_id}) {
         {
             title: '题号',
             dataIndex: 'number',
-            key: 'number', 
+            key: 'number',
             width: '100px'
         },
         {
@@ -112,9 +112,12 @@ function Topic({issue_id}) {
         },
         {
             title: '答案值',
-            dataIndex: 'answer',
-            key: 'answer',
+            dataIndex: 'type',
+            key: 'multi_answer',
             width: '120px',
+            render: (type, record) =>
+                type === 'choice' ? record.answer :
+                    type === 'multiselector' ? record.multi_answer : '',
         },
         {
             title: '分数',
@@ -123,9 +126,9 @@ function Topic({issue_id}) {
             width: '120px',
         },
         {
-            title: '操作', 
-            dataIndex: '_id', 
-            key: '_id', 
+            title: '操作',
+            dataIndex: '_id',
+            key: '_id',
             width: '160px',
             render: id => (
                 <div>
@@ -145,7 +148,7 @@ function Topic({issue_id}) {
                 </div>
             ),
         },
-    ];  
+    ];
     // 删除题目
     const handleDeleteTopic = (id) => () => {
         axios({
@@ -158,8 +161,8 @@ function Topic({issue_id}) {
                 topic_id: id,
             }
         }).then(r => {
-            const {code, data} = r.data
-            if(code === 0) {
+            const { code, data } = r.data
+            if (code === 0) {
                 message.success('删除题目成功！')
                 setTime(Date.now());
             }
@@ -185,17 +188,17 @@ function Topic({issue_id}) {
             follow,
             textarea,
             type,
-        } = record; 
-        switch(type) {
-            case 'choice': 
+        } = record;
+        switch (type) {
+            case 'choice':
                 return options.map((item, index) => (
-                    <ChoiceOptions 
+                    <ChoiceOptions
                         key={index}
                         setTime={setTime}
                         {...item}
                     />
                 ))
-            case 'selector': 
+            case 'selector':
                 /*
                 return options.map((item, index) => (
                     <SelectorOptions 
@@ -208,23 +211,23 @@ function Topic({issue_id}) {
                 return '目前问卷前端使用默认ages数组';
             case 'placepicker':
                 return '固定模块';
-            case 'input': 
+            case 'input':
                 return (
                     <div>
                         <div>此为问答题</div>
                         {
-                            !!follow ? 
-                            <div>(条件展示)题号：{follow.number}-提值：{follow.value}</div>
-                            : ''
+                            !!follow ?
+                                <div>(条件展示)题号：{follow.number}-提值：{follow.value}</div>
+                                : ''
                         }
                         {
                             !!textarea ? <div>是textarea</div> : ''
                         }
                     </div>
                 )
-            case 'multiselector': 
+            case 'multiselector':
                 return options.map((item, index) => (
-                    <MultiSeletorOptions 
+                    <MultiSeletorOptions
                         key={index}
                         setTime={setTime}
                         {...item}
@@ -232,11 +235,11 @@ function Topic({issue_id}) {
                 ))
             default:
                 return '空空如也';
-        }        
+        }
     }
 
     const handleExportClicked = () => {
-        const { csv } =  convertResult(result, topic);
+        const { csv } = convertResult(result, topic);
         exportCsv(csv);
     }
 
@@ -300,7 +303,7 @@ function Topic({issue_id}) {
                 footer={false}
                 onCancel={() => setAddTopicModal(false)}
             >
-                <CreateTopicForm 
+                <CreateTopicForm
                     setTime={setTime}
                     setCreateTopicModal={setAddTopicModal}
                     issueId={issue_id}
